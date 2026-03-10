@@ -39,13 +39,16 @@ export function buildPreview(params) {
   const heroStijl = params.get('hero')     || 'split';
   const projStijl = params.get('proj')     || 'lijst';
 
-  // Craft heeft altijd zijn eigen warm palet
-  const paletKey = tpl === 'craft' ? 'warm' : thema;
+  // Thema volgt altijd de gebruikerskeuze
+  // Craft krijgt standaard warm mee, maar de gebruiker kan dit overschrijven
+  const paletKey = thema === 'warm' ? 'warm' : thema;
   const c = palettes[paletKey] || palettes.licht;
 
-  // Agency heeft een eigen font, anderen volgen de keuze
-  const fKey = tpl === 'agency' ? 'agency' : tpl === 'craft' ? 'craft' : fontKey;
-  const f    = fonts[fKey] || fonts.grotesk;
+  // Font volgt altijd de gebruikerskeuze
+  // Agency en Craft hebben een eigen standaardfont in de fontMap,
+  // maar de gebruiker kan dit overschrijven via de font-picker
+  const fKey = fonts[fontKey] ? fontKey : (tpl === 'agency' ? 'agency' : tpl === 'craft' ? 'craft' : 'grotesk');
+  const f    = fonts[fKey];
 
   const tplModule = templates[tpl] || templates.tech;
   const ctx       = { c, f, heroStijl, projStijl };
