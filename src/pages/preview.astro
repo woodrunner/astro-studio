@@ -1,0 +1,177 @@
+---
+// Pure HTML pagina - URL params worden client-side gelezen
+---
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+    .preview-wrap { min-height: 100vh; }
+  </style>
+</head>
+<body>
+  <div class="preview-wrap" id="preview"></div>
+
+  <script is:inline>
+    const params  = new URLSearchParams(location.search);
+    const tpl     = params.get('template') || 'tech';
+    const thema   = params.get('thema')    || 'licht';
+    const accent  = '#' + (params.get('accent') || '2563EB');
+    const font    = params.get('font')     || 'grotesk';
+    const hero    = params.get('hero')     || 'split';
+    const projstijl = params.get('proj')  || 'lijst';
+
+    // Naam placeholder voor preview
+    const naam = 'Jana Declercq';
+    const tagline = 'Designer & Developer';
+
+    // Kleurpaletten per thema
+    const donker = { bg:'#0E0E0E', surface:'#161616', surface2:'#1F1F1F', text:'#F0EDE6', muted:'#888', border:'#2A2A2A' };
+    const licht  = { bg:'#F7F5F0', surface:'#FFFFFF', surface2:'#EDEBE6', text:'#1A1A1A', muted:'#666', border:'#D8D5CF' };
+    const c      = thema === 'donker' ? donker : licht;
+
+    // Fonts
+    const fonts = {
+      grotesk: { heading: "'Space Grotesk', sans-serif", body: "'Space Grotesk', sans-serif", mono: "'Space Mono', monospace" },
+      serif:   { heading: "'Playfair Display', serif",  body: "'DM Sans', sans-serif",       mono: "'Space Mono', monospace" },
+      sans:    { heading: "'DM Sans', sans-serif",      body: "'DM Sans', sans-serif",       mono: "'Space Mono', monospace" },
+    };
+    const f = fonts[font] || fonts.grotesk;
+
+    document.body.style.background = c.bg;
+    document.body.style.color      = c.text;
+    document.body.style.fontFamily = f.body;
+
+    // Projecten placeholder
+    const projects = [
+      { num:'01', title:'Webshop bakkerij', cat:'E-commerce', tags:['React','Stripe'], desc:'Volledige webshop met bestelsysteem.' },
+      { num:'02', title:'Portfolio architect', cat:'Portfolio',  tags:['Astro','CSS'],   desc:'Minimalistische portfolio met galerij.' },
+      { num:'03', title:'Restaurant website', cat:'Website',    tags:['WordPress'],     desc:'Meertalige site met reservatiesysteem.' },
+    ];
+
+    // ── NAV ───────────────────────────────────────────────
+    function buildNav() {
+      if (tpl === 'luxury') {
+        return `<nav style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:1.25rem 3rem;background:${c.bg};border-bottom:1px solid ${c.border};">
+          <a style="font-family:${f.heading};font-size:1.3rem;color:${accent};text-decoration:none;">${naam.split(' ')[0]}</a>
+          <ul style="display:flex;gap:2rem;list-style:none;">
+            ${['Over mij','Werk','Contact'].map(l => `<li><a style="color:${c.muted};text-decoration:none;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;">${l}</a></li>`).join('')}
+          </ul>
+        </nav>`;
+      }
+      if (tpl === 'craft') {
+        return `<nav style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:${c.surface};border-bottom:2px solid ${accent};">
+          <a style="font-family:${f.heading};font-size:1.1rem;font-weight:700;color:${c.text};text-decoration:none;">${naam}</a>
+          <ul style="display:flex;gap:2rem;list-style:none;">
+            ${['Diensten','Werk','Contact'].map(l => `<li><a style="color:${c.muted};text-decoration:none;font-size:0.9rem;font-weight:500;">${l}</a></li>`).join('')}
+          </ul>
+        </nav>`;
+      }
+      // tech (default)
+      return `<nav style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:${c.bg};border-bottom:1px solid ${c.border};">
+        <span style="font-family:${f.mono};font-size:0.75rem;color:${c.muted};">${naam.split(' ').map(w=>w[0]).join('')}_</span>
+        <ul style="display:flex;gap:2rem;list-style:none;align-items:center;">
+          ${['Work','About','Contact'].map(l => `<li><a style="color:${c.muted};text-decoration:none;font-size:0.85rem;">${l}</a></li>`).join('')}
+          <li><a style="background:${accent};color:#fff;padding:0.4rem 1rem;font-size:0.75rem;text-decoration:none;">Hire me</a></li>
+        </ul>
+      </nav>`;
+    }
+
+    // ── HERO ──────────────────────────────────────────────
+    function buildHero() {
+      const [v, ...r] = naam.split(' ');
+      const a = r.join(' ');
+
+      if (hero === 'centered') {
+        return `<section style="min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 3rem;border-bottom:1px solid ${c.border};">
+          <p style="font-family:${f.mono};font-size:0.7rem;letter-spacing:0.2em;color:${accent};margin-bottom:1.5rem;text-transform:uppercase;">✦ Beschikbaar voor projecten</p>
+          <h1 style="font-family:${f.heading};font-size:clamp(3rem,8vw,6rem);font-weight:700;line-height:1;letter-spacing:-0.03em;margin-bottom:1rem;">${v}<br/><span style="color:${accent}">${a}.</span></h1>
+          <p style="font-size:1rem;color:${c.muted};max-width:420px;margin:1.5rem auto 2.5rem;">Ik maak digitale ervaringen die mensen bijblijven.</p>
+          <a style="background:${accent};color:#fff;padding:0.9rem 2.5rem;font-size:0.85rem;font-weight:500;text-decoration:none;letter-spacing:0.05em;">Bekijk mijn werk →</a>
+        </section>`;
+      }
+
+      if (hero === 'minimal') {
+        return `<section style="padding:6rem 3rem 4rem;border-bottom:1px solid ${c.border};">
+          <p style="font-family:${f.mono};font-size:0.7rem;letter-spacing:0.2em;color:${c.muted};margin-bottom:3rem;text-transform:uppercase;">Available for new projects — ${new Date().getFullYear()}</p>
+          <h1 style="font-family:${f.heading};font-size:clamp(2.5rem,6vw,5rem);font-weight:700;line-height:1.05;letter-spacing:-0.03em;max-width:700px;">${naam} — ${tagline}.</h1>
+          <div style="margin-top:3rem;display:flex;gap:1rem;">
+            <a style="border:1px solid ${c.text};color:${c.text};padding:0.8rem 2rem;font-size:0.85rem;text-decoration:none;">View work →</a>
+          </div>
+        </section>`;
+      }
+
+      // split (default)
+      return `<section style="min-height:88vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 3rem 4rem;border-bottom:1px solid ${c.border};">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid ${c.border};margin-bottom:3rem;">
+          <span style="font-family:${f.mono};font-size:0.7rem;color:${c.muted};display:flex;align-items:center;gap:0.5rem;"><span style="width:6px;height:6px;border-radius:50%;background:#22C55E;display:inline-block;"></span>Available for new projects</span>
+          <span style="font-family:${f.mono};font-size:0.7rem;color:${c.muted};">${new Date().getFullYear()} — ${tagline}</span>
+        </div>
+        <h1 style="font-family:${f.heading};font-size:clamp(3rem,8vw,6.5rem);font-weight:700;line-height:1;letter-spacing:-0.03em;margin-bottom:2.5rem;">${v}<br/><span style="color:${accent}">${a}.</span></h1>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
+          <p style="font-size:1rem;color:${c.muted};max-width:400px;line-height:1.7;">Ik maak digitale ervaringen die mensen bijblijven. Van concept tot lancering.</p>
+          <div style="display:flex;gap:0.75rem;">
+            <a style="background:${c.text};color:${c.bg};padding:0.85rem 2rem;font-size:0.8rem;font-weight:500;text-decoration:none;letter-spacing:0.05em;">View work →</a>
+            <a style="border:1px solid ${c.border};color:${c.text};padding:0.85rem 2rem;font-size:0.8rem;text-decoration:none;letter-spacing:0.05em;">Contact</a>
+          </div>
+        </div>
+      </section>`;
+    }
+
+    // ── PROJECTEN ─────────────────────────────────────────
+    function buildProjects() {
+      if (projstijl === 'grid') {
+        const cards = projects.map(p => `
+          <div style="border:1px solid ${c.border};overflow:hidden;">
+            <div style="height:140px;background:linear-gradient(135deg,${accent}22,${accent}44);display:flex;align-items:center;justify-content:center;font-family:${f.heading};font-size:2.5rem;font-weight:700;color:${accent};">${p.title[0]}</div>
+            <div style="padding:1.25rem;">
+              <p style="font-family:${f.mono};font-size:0.6rem;color:${accent};letter-spacing:0.15em;margin-bottom:0.4rem;text-transform:uppercase;">${p.cat}</p>
+              <h3 style="font-family:${f.heading};font-size:1rem;font-weight:600;margin-bottom:0.5rem;">${p.title}</h3>
+              <p style="font-size:0.8rem;color:${c.muted};">${p.desc}</p>
+            </div>
+          </div>`).join('');
+        return `<section style="padding:4rem 3rem;border-bottom:1px solid ${c.border};">
+          <p style="font-family:${f.mono};font-size:0.7rem;color:${accent};letter-spacing:0.15em;margin-bottom:1rem;text-transform:uppercase;">02 — Projecten</p>
+          <h2 style="font-family:${f.heading};font-size:2rem;font-weight:700;margin-bottom:2.5rem;">Recent werk.</h2>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;">${cards}</div>
+        </section>`;
+      }
+      // lijst (default)
+      const rows = projects.map(p => `
+        <div style="display:grid;grid-template-columns:3rem 1fr auto;gap:1.5rem;align-items:center;padding:1.5rem 0;border-top:1px solid ${c.border};">
+          <span style="font-family:${f.mono};font-size:0.7rem;color:${c.muted};">${p.num}</span>
+          <div>
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.3rem;">
+              <h3 style="font-size:1rem;font-weight:600;">${p.title}</h3>
+              <span style="font-family:${f.mono};font-size:0.55rem;background:${accent};color:#fff;padding:0.15rem 0.5rem;text-transform:uppercase;letter-spacing:0.1em;">${p.cat}</span>
+            </div>
+            <p style="font-size:0.8rem;color:${c.muted};">${p.desc}</p>
+          </div>
+          <div style="display:flex;gap:0.35rem;flex-wrap:wrap;justify-content:flex-end;">
+            ${p.tags.map(t => `<span style="font-family:${f.mono};font-size:0.6rem;border:1px solid ${c.border};color:${c.muted};padding:0.15rem 0.4rem;">${t}</span>`).join('')}
+          </div>
+        </div>`).join('');
+      return `<section style="padding:4rem 3rem;border-bottom:1px solid ${c.border};">
+        <p style="font-family:${f.mono};font-size:0.7rem;color:${accent};letter-spacing:0.15em;margin-bottom:1rem;text-transform:uppercase;">02 — Projecten</p>
+        <h2 style="font-family:${f.heading};font-size:2rem;font-weight:700;margin-bottom:2rem;">Recent werk.</h2>
+        ${rows}
+        <div style="border-top:1px solid ${c.border};"></div>
+      </section>`;
+    }
+
+    // ── RENDER ────────────────────────────────────────────
+    document.getElementById('preview').innerHTML =
+      buildNav() + buildHero() + buildProjects();
+
+    // Update vanuit parent window
+    window.addEventListener('message', e => {
+      if (e.data?.type === 'UPDATE') location.href = e.data.url;
+    });
+  </script>
+</body>
+</html>
