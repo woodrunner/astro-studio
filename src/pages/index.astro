@@ -39,7 +39,8 @@ import Layout from '../layouts/Layout.astro';
             {[
               { id: 'tech',   label: 'Clean Tech',    sub: 'Minimaal, modern, professioneel', accent: '#2563EB' },
               { id: 'luxury', label: 'Dark Luxury',   sub: 'Elegant, exclusief, donker',      accent: '#E8C87A' },
-              { id: 'craft',  label: 'Warm Craft',    sub: 'Warm, ambachtelijk, persoonlijk', accent: '#B45309' },
+              { id: 'agency', label: 'Bold Agency',   sub: 'Groot, brutaal, impactvol',       accent: '#FF3B00' },
+              { id: 'craft',  label: 'Warm Craft',    sub: 'Persoonlijk, warm, ambachtelijk', accent: '#B45309' },
             ].map(t => (
               <button
                 data-tpl={t.id}
@@ -282,7 +283,7 @@ import Layout from '../layouts/Layout.astro';
   }
 
   function updateSummary() {
-    const labels = { tech: 'Clean Tech', luxury: 'Dark Luxury', craft: 'Warm Craft' };
+    const labels = { tech: 'Clean Tech', luxury: 'Dark Luxury', agency: 'Bold Agency', craft: 'Warm Craft' };
     const fLabels = { grotesk: 'Space Grotesk', serif: 'Playfair', sans: 'DM Sans' };
     const hLabels = { split: 'Split layout', centered: 'Gecentreerd', minimal: 'Minimaal' };
     document.getElementById('sum-tpl').textContent   = labels[state.template] || state.template;
@@ -298,8 +299,8 @@ import Layout from '../layouts/Layout.astro';
   document.querySelectorAll('.template-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       state.template = btn.dataset.tpl;
-      const accents = { tech: '#2563EB', luxury: '#E8C87A', craft: '#B45309' };
-      const themas  = { tech: 'licht',   luxury: 'donker',  craft: 'licht'  };
+      const accents = { tech: '#2563EB', luxury: '#E8C87A', agency: '#FF3B00', craft: '#B45309' };
+      const themas  = { tech: 'licht',   luxury: 'donker',  agency: 'donker', craft: 'licht'  };
       state.accent  = accents[state.template];
       state.thema   = themas[state.template];
       document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('active','border-blue-500'));
