@@ -37,21 +37,21 @@ import Layout from '../layouts/Layout.astro';
 
           <div class="flex flex-col gap-3">
             {[
-              { id: 'tech',   label: 'Clean Tech',    sub: 'Minimaal, modern, professioneel', accent: '#2563EB' },
-              { id: 'luxury', label: 'Dark Luxury',   sub: 'Elegant, exclusief, donker',      accent: '#E8C87A' },
-              { id: 'agency', label: 'Bold Agency',   sub: 'Groot, brutaal, impactvol',       accent: '#FF3B00' },
-              { id: 'craft',  label: 'Warm Craft',    sub: 'Persoonlijk, warm, ambachtelijk', accent: '#B45309' },
+              { id: 'tech',   label: 'Clean Tech',    sub: 'Minimaal, modern, professioneel', accent: '#2563EB', ref: 'linear.app · vercel.com · stripe.com' },
+              { id: 'luxury', label: 'Dark Luxury',   sub: 'Elegant, exclusief, donker',      accent: '#E8C87A', ref: 'pentagram.com · hugeinc.com' },
+              { id: 'agency', label: 'Bold Agency',   sub: 'Groot, brutaal, impactvol',       accent: '#FF3B00', ref: 'instrument.com · fantasy.co' },
+              { id: 'craft',  label: 'Warm Craft',    sub: 'Persoonlijk, warm, ambachtelijk', accent: '#B45309', ref: 'personele makers · kleine bureaus' },
             ].map(t => (
               <button
                 data-tpl={t.id}
                 class="template-btn text-left p-4 rounded border border-zinc-700 hover:border-zinc-400 transition-all group relative"
               >
-                <!-- Kleurblok -->
                 <div class="flex items-center gap-3 mb-2">
                   <span class="w-3 h-3 rounded-full shrink-0" style={`background:${t.accent}`}></span>
                   <span class="font-semibold text-sm">{t.label}</span>
                 </div>
-                <p class="text-xs text-zinc-500">{t.sub}</p>
+                <p class="text-xs text-zinc-500 mb-2">{t.sub}</p>
+                <p class="font-mono text-[0.6rem] text-zinc-700">à la: {t.ref}</p>
                 <span class="absolute top-3 right-3 text-blue-400 opacity-0 group-[.active]:opacity-100 text-xs font-mono">✓</span>
               </button>
             ))}
@@ -176,6 +176,16 @@ import Layout from '../layouts/Layout.astro';
             <div class="flex justify-between"><span class="text-zinc-600">Projecten</span><span id="sum-proj" class="text-zinc-200">—</span></div>
           </div>
 
+          <!-- Klantlink kopiëren -->
+          <div class="mb-5">
+            <button id="btn-copy" type="button"
+              class="w-full py-2.5 text-sm border border-zinc-700 hover:border-zinc-400 text-zinc-300 hover:text-zinc-100 rounded transition-all font-mono flex items-center justify-center gap-2">
+              <span id="copy-icon">⎘</span>
+              <span id="copy-label">Kopieer klantlink</span>
+            </button>
+            <p class="text-[0.6rem] text-zinc-700 font-mono text-center mt-1.5">Stuur deze link naar de klant — configuratie al ingevuld</p>
+          </div>
+
           <!-- Formulier -->
           <form id="contact-form" class="flex flex-col gap-3" netlify>
             <input type="hidden" name="form-name" value="studio-configuratie" />
@@ -222,7 +232,17 @@ import Layout from '../layouts/Layout.astro';
     <!-- PREVIEW (rechts) -->
     <main class="flex-1 flex flex-col bg-zinc-900">
       <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-800">
-        <span class="font-mono text-xs text-zinc-600">Live preview</span>
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-xs text-zinc-600">Live preview</span>
+          <span class="font-mono text-xs text-zinc-700">·</span>
+          <input
+            id="naam-input"
+            type="text"
+            placeholder="Naam klant..."
+            value="Jana Declercq"
+            class="font-mono text-xs bg-transparent border border-zinc-700 rounded px-2 py-0.5 text-zinc-300 w-40 focus:outline-none focus:border-blue-500 placeholder:text-zinc-700"
+          />
+        </div>
         <div class="flex items-center gap-1.5">
           <span class="w-2.5 h-2.5 rounded-full bg-zinc-700"></span>
           <span class="w-2.5 h-2.5 rounded-full bg-zinc-700"></span>
@@ -245,13 +265,20 @@ import Layout from '../layouts/Layout.astro';
 
 <script is:inline>
   // ── STATE ────────────────────────────────────────────────
-  const state = { step: 1, template: 'tech', thema: 'licht', accent: '#2563EB', font: 'grotesk', hero: 'split', proj: 'lijst' };
+  const state = { step: 1, template: 'tech', thema: 'licht', accent: '#2563EB', font: 'grotesk', hero: 'split', proj: 'lijst', naam: 'Jana Declercq' };
   const TOTAL = 4;
 
   // ── HELPERS ──────────────────────────────────────────────
   function buildUrl() {
     const hex = state.accent.replace('#', '');
-    return `/preview?template=${state.template}&thema=${state.thema}&accent=${hex}&font=${state.font}&hero=${state.hero}&proj=${state.proj}`;
+    const n = encodeURIComponent(state.naam || 'Jana Declercq');
+    return `/preview?template=${state.template}&thema=${state.thema}&accent=${hex}&font=${state.font}&hero=${state.hero}&proj=${state.proj}&naam=${n}`;
+  }
+
+  function buildShareUrl() {
+    const hex = state.accent.replace('#', '');
+    const n = encodeURIComponent(state.naam || 'Jana Declercq');
+    return `${location.origin}/?template=${state.template}&thema=${state.thema}&accent=${hex}&font=${state.font}&hero=${state.hero}&proj=${state.proj}&naam=${n}`;
   }
 
   function updatePreview() {
@@ -368,6 +395,24 @@ import Layout from '../layouts/Layout.astro';
     if (state.step > 1) { state.step--; showStep(state.step); }
   });
 
+  // ── NAAM ──────────────────────────────────────────────────
+  document.getElementById('naam-input').addEventListener('input', e => {
+    state.naam = e.target.value || 'Jana Declercq';
+    updatePreview();
+  });
+
+  // ── KOPIEER LINK ──────────────────────────────────────────
+  document.getElementById('btn-copy').addEventListener('click', () => {
+    navigator.clipboard.writeText(buildShareUrl()).then(() => {
+      document.getElementById('copy-label').textContent = 'Link gekopieerd!';
+      document.getElementById('copy-icon').textContent = '✓';
+      setTimeout(() => {
+        document.getElementById('copy-label').textContent = 'Kopieer klantlink';
+        document.getElementById('copy-icon').textContent = '⎘';
+      }, 2500);
+    });
+  });
+
   // ── FORMULIER ─────────────────────────────────────────────
   document.getElementById('contact-form').addEventListener('submit', async e => {
     e.preventDefault();
@@ -380,13 +425,31 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('form-success').classList.remove('hidden');
   });
 
-  // Init
+  // ── INIT: prefill vanuit URL params (voor klantlink) ──────
+  const urlP = new URLSearchParams(location.search);
+  if (urlP.get('template')) state.template = urlP.get('template');
+  if (urlP.get('thema'))    state.thema    = urlP.get('thema');
+  if (urlP.get('accent'))   state.accent   = '#' + urlP.get('accent');
+  if (urlP.get('font'))     state.font     = urlP.get('font');
+  if (urlP.get('hero'))     state.hero     = urlP.get('hero');
+  if (urlP.get('proj'))     state.proj     = urlP.get('proj');
+  if (urlP.get('naam'))     state.naam     = decodeURIComponent(urlP.get('naam'));
+
+  if (urlP.get('naam')) {
+    document.getElementById('naam-input').value = state.naam;
+  }
+
   showStep(1);
-  // Zet eerste template knop actief
-  document.querySelector('[data-tpl="tech"]').classList.add('active','border-blue-500');
-  document.querySelector('[data-thema="licht"]').classList.add('border-blue-500');
-  document.querySelector('[data-font="grotesk"]').classList.add('border-blue-500');
-  document.querySelector('[data-hero="split"]').classList.add('border-blue-500');
-  document.querySelector('[data-proj="lijst"]').classList.add('border-blue-500');
+  updatePreview();
+
+  // Activeer de juiste knoppen op basis van state
+  document.querySelector(`[data-tpl="${state.template}"]`)?.classList.add('active','border-blue-500');
+  setActive('.thema-btn',  state.thema,    'thema');
+  setActive('.font-btn',   state.font,     'font');
+  setActive('.hero-btn',   state.hero,     'hero');
+  setActive('.proj-btn',   state.proj,     'proj');
+  if (!urlP.get('template')) {
+    document.querySelector('[data-tpl="tech"]').classList.add('active','border-blue-500');
+  }
 </script>
 

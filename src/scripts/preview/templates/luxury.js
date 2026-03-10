@@ -1,7 +1,7 @@
 import { NAAM, YEAR, PROJECTS } from '../config.js';
 
-export function nav({ c, f }) {
-  const voornaam = NAAM.split(' ')[0];
+export function nav({ c, f, naam }) {
+  const voornaam = (naam || NAAM).split(' ')[0];
   return `
     <nav style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:1.25rem 3rem;background:${c.bg};border-bottom:1px solid ${c.border};">
       <a style="font-family:${f.h};font-size:1.3rem;color:var(--accent);text-decoration:none;">${voornaam}</a>
@@ -13,8 +13,8 @@ export function nav({ c, f }) {
     </nav>`;
 }
 
-export function hero({ c, f, heroStijl }) {
-  const [voornaam, ...rest] = NAAM.split(' ');
+export function hero({ c, f, heroStijl, naam }) {
+  const [voornaam, ...rest] = (naam || NAAM).split(' ');
   const achternaam = rest.join(' ');
 
   if (heroStijl === 'centered') return `

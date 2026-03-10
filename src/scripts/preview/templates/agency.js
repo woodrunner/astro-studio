@@ -1,7 +1,7 @@
 import { NAAM, YEAR, PROJECTS } from '../config.js';
 
-export function nav({ c, f }) {
-  const initialen = NAAM.split(' ').map(w => w[0]).join('');
+export function nav({ c, f, naam }) {
+  const initialen = (naam || NAAM).split(' ').map(w => w[0]).join('');
   return `
     <nav style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:${c.bg};border-bottom:1px solid ${c.border};">
       <a style="font-family:${f.h};font-size:1.5rem;font-weight:900;letter-spacing:0.08em;text-transform:uppercase;color:${c.text};text-decoration:none;">
@@ -18,7 +18,7 @@ export function nav({ c, f }) {
     </nav>`;
 }
 
-export function hero({ c, f, heroStijl }) {
+export function hero({ c, f, heroStijl, naam }) {
   const mutedFade = `${c.text}18`;
 
   if (heroStijl === 'centered') return `

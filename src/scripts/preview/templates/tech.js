@@ -1,7 +1,8 @@
 import { NAAM, TAGLINE, YEAR, PROJECTS } from '../config.js';
 
-export function nav({ c, f }) {
-  const initialen = NAAM.split(' ').map(w => w[0]).join('') + '_';
+export function nav({ c, f, naam }) {
+  const n = naam || NAAM;
+  const initialen = n.split(' ').map(w => w[0]).join('') + '_';
   const links = ['Work', 'About', 'Contact'];
 
   return `
@@ -16,8 +17,9 @@ export function nav({ c, f }) {
     </nav>`;
 }
 
-export function hero({ c, f, heroStijl }) {
-  const [voornaam, ...rest] = NAAM.split(' ');
+export function hero({ c, f, heroStijl, naam }) {
+  const n = naam || NAAM;
+  const [voornaam, ...rest] = n.split(' ');
   const achternaam = rest.join(' ');
 
   if (heroStijl === 'centered') return `
@@ -34,7 +36,7 @@ export function hero({ c, f, heroStijl }) {
     <section style="padding:6rem 3rem 4rem;border-bottom:1px solid ${c.border};">
       <p style="font-family:${f.mo};font-size:0.7rem;letter-spacing:0.2em;color:${c.muted};text-transform:uppercase;margin-bottom:3rem;">Available for new projects — ${YEAR}</p>
       <h1 style="font-family:${f.h};font-size:clamp(2.5rem,6vw,5rem);font-weight:700;line-height:1.05;letter-spacing:-0.03em;max-width:700px;">
-        ${NAAM} — ${TAGLINE}.
+        ${n} — ${TAGLINE}.
       </h1>
       <div style="margin-top:3rem;">
         <a style="border:1px solid ${c.text};color:${c.text};padding:0.8rem 2rem;font-size:0.85rem;text-decoration:none;">View work →</a>

@@ -1,10 +1,11 @@
 import { NAAM, PROJECTS } from '../config.js';
 
-export function nav({ c, f }) {
+export function nav({ c, f, naam }) {
+  const _naam = naam || NAAM;
   return `
     <nav style="background:${c.surface};border-bottom:1px solid ${c.border};">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;">
-        <a style="font-family:${f.h};font-size:1.2rem;font-weight:600;font-style:italic;color:${c.text};text-decoration:none;">${NAAM}</a>
+        <a style="font-family:${f.h};font-size:1.2rem;font-weight:600;font-style:italic;color:${c.text};text-decoration:none;">${_naam}</a>
         <ul style="display:flex;gap:2rem;list-style:none;">
           ${['Home','Diensten','Over mij','Contact'].map(l => `
             <li><a style="font-family:${f.b};font-size:0.85rem;color:${c.muted};text-decoration:none;">${l}</a></li>
@@ -15,10 +16,11 @@ export function nav({ c, f }) {
     </nav>`;
 }
 
-export function hero({ c, f, heroStijl }) {
-  const [voornaam, ...rest] = NAAM.split(' ');
+export function hero({ c, f, heroStijl, naam }) {
+  const _naam = naam || NAAM;
+  const [voornaam, ...rest] = _naam.split(' ');
   const achternaam = rest.join(' ');
-  const initialen = NAAM.split(' ').map(w => w[0]).join('');
+  const initialen = _naam.split(' ').map(w => w[0]).join('');
 
   if (heroStijl === 'centered') return `
     <section style="background:${c.bg};padding:6rem 3rem;text-align:center;">

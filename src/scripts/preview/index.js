@@ -1,4 +1,4 @@
-import { palettes, fonts } from './config.js';
+import { palettes, fonts, NAAM } from './config.js';
 import * as tech   from './templates/tech.js';
 import * as luxury from './templates/luxury.js';
 import * as agency from './templates/agency.js';
@@ -50,8 +50,10 @@ export function buildPreview(params) {
   const fKey = fonts[fontKey] ? fontKey : (tpl === 'agency' ? 'agency' : tpl === 'craft' ? 'craft' : 'grotesk');
   const f    = fonts[fKey];
 
+  const naam = params.get('naam') ? decodeURIComponent(params.get('naam')) : NAAM;
+
   const tplModule = templates[tpl] || templates.tech;
-  const ctx       = { c, f, heroStijl, projStijl };
+  const ctx       = { c, f, heroStijl, projStijl, naam };
 
   const navHtml      = tplModule.nav(ctx);
   const heroHtml     = tplModule.hero(ctx);
